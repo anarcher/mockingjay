@@ -1,1 +1,67 @@
-memo = "ab4fef131ee828e96ba67d31a7d690bd5f2f42040c6766b1b12fe856f87e0ff7"
+memo = "3f390db0cbace2c28cbd91d55117ecd4b39da280c30c406c6904c06c3a19c3d6"
+
+[[projects]]
+  name = "github.com/aws/aws-sdk-go"
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/cloudwatch","service/sts"]
+  revision = "e0cdae7a65ba3a5e66a0af747a7b3967ddac099c"
+  version = "v1.8.30"
+
+[[projects]]
+  name = "github.com/beevik/etree"
+  packages = ["."]
+  revision = "abae5fc32af8862e420d52e686a7e6ec14111685"
+  version = "v0"
+
+[[projects]]
+  name = "github.com/elazarl/goproxy"
+  packages = ["."]
+  revision = "0a5b8bdb09049ae4ae68e75437ded0b7a2e324e3"
+  version = "v1.0"
+
+[[projects]]
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
+
+[[projects]]
+  name = "github.com/go-ini/ini"
+  packages = ["."]
+  revision = "36da989cdc560b989d8f195aec46214d33665d20"
+  version = "v1.27.2"
+
+[[projects]]
+  name = "github.com/go-kit/kit"
+  packages = ["log"]
+  revision = "fadad6fffe0466b19df9efd9acde5c9a52df5fa4"
+  version = "v0.4.0"
+
+[[projects]]
+  name = "github.com/go-logfmt/logfmt"
+  packages = ["."]
+  revision = "390ab7935ee28ec6b286364bba9b4dd6410cb3d5"
+  version = "v0.3.0"
+
+[[projects]]
+  name = "github.com/go-stack/stack"
+  packages = ["."]
+  revision = "7a2f19628aabfe68f0766b59e74d6315f8347d22"
+  version = "v1.5.3"
+
+[[projects]]
+  name = "github.com/jmespath/go-jmespath"
+  packages = ["."]
+  revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
+  version = "0.2.2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/kr/logfmt"
+  packages = ["."]
+  revision = "b84e30acd515aadc4b783ad4ff83aff3299bdfe0"
+
+[[projects]]
+  branch = "v2"
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b"
