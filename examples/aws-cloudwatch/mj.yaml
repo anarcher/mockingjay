@@ -1,0 +1,7 @@
+proxies:
+    - target: http://localhost:8081
+      filter:
+        method: POST
+        form:
+            Action: GetMetricStatistics
+            MetricName: MetricName
