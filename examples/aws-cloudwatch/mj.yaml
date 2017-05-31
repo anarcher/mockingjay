@@ -5,3 +5,8 @@ proxies:
         form:
             Action: GetMetricStatistics
             MetricName: MetricName
+    - target: http://localhost:8081
+      filter:
+          method: POST
+          form:
+              Action: SetDesiredCapacity

@@ -3,14 +3,13 @@ package main
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/aws/aws-sdk-go/service/autoscaling"
 
 	"flag"
 	"fmt"
 	"net/http"
 	"net/url"
 	"os"
-	"time"
 )
 
 var (
@@ -42,16 +41,12 @@ func main() {
 	}
 
 	sess := session.Must(session.NewSession(cfg))
-	svc := cloudwatch.New(sess)
-	params := &cloudwatch.GetMetricStatisticsInput{
-		EndTime:    aws.Time(time.Now()),
-		MetricName: aws.String("MetricName"),
-		Namespace:  aws.String("Namespace"),
-		Period:     aws.Int64(60),
-		StartTime:  aws.Time(time.Now().Add(-10 * time.Second)),
-		Statistics: []*string{aws.String("Minimum")},
+	svc := autoscaling.New(sess)
+	input := &autoscaling.SetDesiredCapacityInput{
+		AutoScalingGroupName: aws.String("TEST"),
+		DesiredCapacity:      aws.Int64(1000),
 	}
-	resp, err := svc.GetMetricStatistics(params)
+	resp, err := svc.SetDesiredCapacity(input)
 	if err != nil {
 		fmt.Println("err", err)
 		os.Exit(1)

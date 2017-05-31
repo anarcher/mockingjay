@@ -2,30 +2,39 @@ package main
 
 import (
 	"github.com/anarcher/mockingjay/pkg/log"
-	"github.com/anarcher/mockingjay/pkg/xml"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/asdine/storm"
 
-	"fmt"
 	"net/http"
+	"os"
 )
 
-type handler struct{}
-
-var (
+type Handler struct {
 	mux map[string]func(http.ResponseWriter, *http.Request)
-)
+	db  *storm.DB
+}
 
 func main() {
 	logger := log.Logger
 
-	server := http.Server{
-		Addr:    ":8081",
-		Handler: &handler{},
+	db, err := storm.Open("metrics.db")
+	defer db.Close()
+
+	if err != nil {
+		logger.Log("err", err)
+		os.Exit(1)
 	}
 
-	mux = make(map[string]func(http.ResponseWriter, *http.Request))
-	mux["GetMetricStatistics"] = GetMetricStatistics
+	handler := &Handler{
+		mux: make(map[string]func(http.ResponseWriter, *http.Request)),
+		db:  db,
+	}
+	handler.mux["GetMetricStatistics"] = handler.GetMetricStatistics
+	handler.mux["SetDesiredCapacity"] = handler.SetDesiredCapacity
+
+	server := http.Server{
+		Addr:    ":8081",
+		Handler: handler,
+	}
 
 	if err := server.ListenAndServe(); err != nil {
 		logger.Log("err", err)
@@ -33,7 +42,7 @@ func main() {
 
 }
 
-func (*handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	logger := log.Logger
 	if err := r.ParseForm(); err != nil {
 		logger.Log("err", err)
@@ -41,33 +50,10 @@ func (*handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	action := r.FormValue("Action")
 	logger.Log("action", action)
-	if h, ok := mux[action]; ok {
+	if h, ok := h.mux[action]; ok {
 		h(w, r)
 		return
 	} else {
 		http.Error(w, "Action not found", 500)
 	}
-}
-
-func GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
-	logger := log.Logger
-
-	if err := r.ParseForm(); err != nil {
-		logger.Log("err", err)
-		http.Error(w, "ParseForm Error", 500)
-		return
-	}
-
-	logger.Log("req.Form", fmt.Sprintf("%v", r.Form))
-
-	output := &cloudwatch.GetMetricStatisticsOutput{
-		Label: aws.String("test"),
-	}
-	xmlRes, err := xml.Response("GetMetricStatistics", output, "")
-	if err != nil {
-		logger.Log("err", err)
-		http.Error(w, "XML Error", 500)
-	}
-
-	fmt.Fprintf(w, xmlRes)
 }
