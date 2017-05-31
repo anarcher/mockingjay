@@ -3,6 +3,7 @@ package xml
 import (
 	"fmt"
 	"reflect"
+	"time"
 
 	"github.com/beevik/etree"
 	"github.com/fatih/structs"
@@ -15,6 +16,14 @@ const (
 )
 
 func NewElement(pe *etree.Element, v interface{}, names ...string) {
+
+	//TODO(anarcher) Need refactoring
+	if ts, ok := v.(*time.Time); ok {
+		tsStr := ts.Format(time.RFC3339)
+		ValueElement(pe, tsStr)
+		return
+	}
+
 	switch Kind(v) {
 	case reflect.Struct:
 		StructElement(pe, v, names...)
