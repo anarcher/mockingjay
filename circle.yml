@@ -1,0 +1,14 @@
+machine:
+    services:
+        - docker
+    environment:
+        PROJECT_PATH: "github.com/anarcher/mockingjay"
+
+dependencies:
+    override:
+        - docker version 
+        - docker info
+test:
+    override:
+        - docker run -v "$PWD":/go/src/$PROJECT_PATH golang:1.8 go test $PROJECT_PATH/pkg/... -race
+        - docker run -v "$PWD":/go/src/$PROJECT_PATH golang:1.8 go test $PROJECT_PATH/cmd/... -race
