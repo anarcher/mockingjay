@@ -67,3 +67,12 @@ func MetricDimMatcher(dims map[string]string) q.Matcher {
 	return ret
 
 }
+
+func MetricNameMatcher(metricName, namespace string) q.Matcher {
+	var ms []q.Matcher
+	ms = append(ms, q.Eq("Name", metricName))
+	if namespace != "" {
+		ms = append(ms, q.Eq("Namespace", namespace))
+	}
+	return q.And(ms...)
+}

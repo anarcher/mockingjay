@@ -4,7 +4,7 @@ proxies:
         method: POST
         form:
             Action: GetMetricStatistics
-            MetricName: MetricName
+            Namespace: AWS/AutoScaling
     - target: http://localhost:8081
       filter:
           method: POST

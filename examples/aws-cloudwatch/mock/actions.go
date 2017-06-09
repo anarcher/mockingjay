@@ -46,7 +46,10 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 	m2 := MetricDimMatcher(dims)
 	logger.Log("m2", fmt.Sprintf("%+v", m2))
 
-	query := h.db.Select(m2).Limit(1).OrderBy("CreatedAt").Reverse()
+	m3 := MetricNameMatcher(metricName, namespace)
+	logger.Log("m3", fmt.Sprintf("%v", m3))
+
+	query := h.db.Select(m2, m3).Limit(1).OrderBy("CreatedAt").Reverse()
 
 	cnt, err := query.Count(&Metric{})
 	if err != nil {
