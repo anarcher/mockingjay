@@ -14,12 +14,6 @@ import (
 func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 	logger := log.Logger
 
-	if err := r.ParseForm(); err != nil {
-		logger.Log("err", err)
-		http.Error(w, "ParseForm Error", 500)
-		return
-	}
-
 	logger.Log("req.Form", fmt.Sprintf("%v", r.Form))
 
 	metricName := r.Form.Get("MetricName")
@@ -28,6 +22,12 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 	startTime := r.Form.Get("StartTime")
 	endTime := r.Form.Get("EndTime")
 	dims := membersToMap(r, "Dimensions")
+
+	if metricName == "metric-forward" {
+		err := fwCloudwatchGetMetricStatistics(h.cloudwatch, w, r)
+		logger.Log("forward", metricName, "err", err)
+		return
+	}
 
 	logger.Log("metricName", metricName,
 		"namespace", namespace,
