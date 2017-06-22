@@ -7,13 +7,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	kitlog "github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 
 	"net/http"
 	"os"
 )
 
 type Handler struct {
-	mux        map[string]func(http.ResponseWriter, *http.Request)
+	mux        map[string]func(http.ResponseWriter, *http.Request, kitlog.Logger)
 	db         *storm.DB
 	cloudwatch *cloudwatch.CloudWatch
 }
@@ -25,7 +27,7 @@ func main() {
 	defer db.Close()
 
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		os.Exit(1)
 	}
 
@@ -38,14 +40,14 @@ func main() {
 	os.Setenv("AWS_SDK_LOAD_CONFIG", "1")
 	awsSession, err := session.NewSessionWithOptions(awsSessionOptions)
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		os.Exit(1)
 	}
 
 	cloudwatch := cloudwatch.New(awsSession)
 
 	handler := &Handler{
-		mux:        make(map[string]func(http.ResponseWriter, *http.Request)),
+		mux:        make(map[string]func(http.ResponseWriter, *http.Request, kitlog.Logger)),
 		db:         db,
 		cloudwatch: cloudwatch,
 	}
@@ -58,20 +60,21 @@ func main() {
 	}
 
 	if err := server.ListenAndServe(); err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 	}
 
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	logger := log.Logger
 	action := r.FormValue("Action")
-	logger.Log("action", action)
+	logger := kitlog.With(log.Logger, "action", action)
+
 	if h, ok := h.mux[action]; ok {
-		h(w, r)
+		h(w, r, logger)
 		return
 	} else {
+		level.Error(logger).Log("err", "Action not found")
 		http.Error(w, "Action not found", 500)
 	}
 }

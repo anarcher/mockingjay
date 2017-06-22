@@ -39,6 +39,18 @@ func NewMetricString(ns, name, value string) (*Metric, error) {
 
 }
 
+func NewASGInServiceInstancesMetric(ns, asgname, value string) (*Metric, error) {
+
+	m, err := NewMetricString(ns, "GroupInServiceInstances", value)
+	if err != nil {
+		return m, err
+	}
+	m.AutoScalingGroupName = asgname
+
+	return m, nil
+
+}
+
 func MetricStartEndTimeMatcher(from, to string) (q.Matcher, error) {
 	f, err := time.Parse(time.RFC3339, from)
 	if err != nil {

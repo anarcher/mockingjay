@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/anarcher/mockingjay/pkg/log"
 	"github.com/anarcher/mockingjay/pkg/xml"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 
 	"fmt"
 	"net/http"
 )
 
-func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
-	logger := log.Logger
+func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request, logger log.Logger) {
 
 	logger.Log("req.Form", fmt.Sprintf("%v", r.Form))
 
@@ -25,11 +26,11 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 
 	if metricName == "metric-forward" {
 		err := fwCloudwatchGetMetricStatistics(h.cloudwatch, w, r)
-		logger.Log("forward", metricName, "err", err)
+		level.Info(logger).Log("forward", metricName, "err", err)
 		return
 	}
 
-	logger.Log("metricName", metricName,
+	level.Debug(logger).Log("metricName", metricName,
 		"namespace", namespace,
 		"startTime", startTime, "endTime", endTime,
 		"period", period,
@@ -37,17 +38,17 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 
 	m1, err := MetricStartEndTimeMatcher(startTime, endTime)
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	logger.Log("m1", fmt.Sprintf("%+v", m1))
+	level.Debug(logger).Log("m1", fmt.Sprintf("%+v", m1))
 
 	m2 := MetricDimMatcher(dims)
-	logger.Log("m2", fmt.Sprintf("%+v", m2))
+	level.Debug(logger).Log("m2", fmt.Sprintf("%+v", m2))
 
 	m3 := MetricNameMatcher(metricName, namespace)
-	logger.Log("m3", fmt.Sprintf("%v", m3))
+	level.Debug(logger).Log("m3", fmt.Sprintf("%v", m3))
 
 	query := h.db.Select(m2, m3).Limit(1).OrderBy("CreatedAt").Reverse()
 
@@ -57,13 +58,13 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	logger.Log("cnt", cnt)
+	level.Info(logger).Log("metricName", metricName, "namespace", namespace, "dims", fmt.Sprintf("%v", dims), "cnt", cnt)
 
 	var datapoints []*cloudwatch.Datapoint
 	if cnt > 0 {
 		var metrics []*Metric
 		if err := query.Find(&metrics); err != nil {
-			logger.Log("err", err)
+			level.Error(logger).Log("err", err)
 			http.Error(w, err.Error(), 500)
 			return
 		}
@@ -84,7 +85,7 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 	}
 	xmlRes, err := xml.Response("GetMetricStatistics", output, "")
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		http.Error(w, "XML Error", 500)
 		return
 	}
@@ -92,31 +93,23 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, xmlRes)
 }
 
-func (h *Handler) SetDesiredCapacity(w http.ResponseWriter, r *http.Request) {
-	logger := log.Logger
-
-	if err := r.ParseForm(); err != nil {
-		logger.Log("err", err)
-		http.Error(w, "ParseForm Error", 500)
-		return
-	}
+func (h *Handler) SetDesiredCapacity(w http.ResponseWriter, r *http.Request, logger log.Logger) {
 
 	namespace := "AWS/AutoScaling"
 	asgName := r.FormValue("AutoScalingGroupName")
 	dc := r.FormValue("DesiredCapacity")
 
-	logger.Log("asgName", asgName, "dc", dc)
+	level.Info(logger).Log("asgName", asgName, "dc", dc)
 
-	metric, err := NewMetricString(namespace, asgName, dc)
+	metric, err := NewASGInServiceInstancesMetric(namespace, asgName, dc)
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		http.Error(w, "dc error:", 500)
 		return
 	}
-	metric.AutoScalingGroupName = asgName
 
 	if err := h.db.Save(metric); err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		http.Error(w, "db error:", 500)
 		return
 	}
@@ -125,7 +118,7 @@ func (h *Handler) SetDesiredCapacity(w http.ResponseWriter, r *http.Request) {
 
 	xmlr, err := xml.Response("SetDesiredCapacity", output, "")
 	if err != nil {
-		logger.Log("err", err)
+		level.Error(logger).Log("err", err)
 		http.Error(w, "XMLError", 500)
 		return
 	}

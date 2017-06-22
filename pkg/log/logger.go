@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/log/level"
 
 	stdlog "log"
 	"os"
@@ -11,6 +12,7 @@ var Logger log.Logger
 
 func init() {
 	logger := log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
+	logger = level.NewFilter(logger, level.AllowInfo())
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
 	logger = log.With(logger, "caller", log.DefaultCaller)
 
