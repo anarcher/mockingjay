@@ -1,19 +1,16 @@
 package main
 
 import (
-	//	"github.com/asdine/storm"
-	"github.com/asdine/storm/q"
-
+	"fmt"
 	"strconv"
 	"time"
 )
 
 type Metric struct {
-	ID        int `storm:"id,increment"`
 	Namespace string
 	Name      string
 	Value     float64
-	CreatedAt time.Time `storm:index`
+	CreatedAt time.Time
 
 	AutoScalingGroupName string
 }
@@ -51,40 +48,10 @@ func NewASGInServiceInstancesMetric(ns, asgname, value string) (*Metric, error) 
 
 }
 
-func MetricStartEndTimeMatcher(from, to string) (q.Matcher, error) {
-	f, err := time.Parse(time.RFC3339, from)
-	if err != nil {
-		return nil, err
-	}
-	t, err := time.Parse(time.RFC3339, to)
-	if err != nil {
-		return nil, err
-	}
-
-	m := q.And(
-		q.Gte("CreatedAt", f),
-		q.Lte("CreatedAt", t),
-	)
-	return m, nil
+func (m *Metric) ID() string {
+	return getID(m.Namespace, m.Name, m.AutoScalingGroupName)
 }
 
-func MetricDimMatcher(dims map[string]string) q.Matcher {
-	var ms []q.Matcher
-	for k, v := range dims {
-		m := q.Eq(k, v)
-		ms = append(ms, m)
-	}
-
-	ret := q.And(ms...)
-	return ret
-
-}
-
-func MetricNameMatcher(metricName, namespace string) q.Matcher {
-	var ms []q.Matcher
-	ms = append(ms, q.Eq("Name", metricName))
-	if namespace != "" {
-		ms = append(ms, q.Eq("Namespace", namespace))
-	}
-	return q.And(ms...)
+func getID(ns, name, asgname string) string {
+	return fmt.Sprintf("%s:%s:%s", ns, name, asgname)
 }

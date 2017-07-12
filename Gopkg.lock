@@ -9,7 +9,7 @@
 
 [[projects]]
   name = "github.com/aws/aws-sdk-go"
-  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/autoscaling","service/cloudwatch","service/sts"]
+  packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/autoscaling","service/cloudwatch","service/cloudwatch/cloudwatchiface","service/sts"]
   revision = "e0cdae7a65ba3a5e66a0af747a7b3967ddac099c"
   version = "v1.8.30"
 
@@ -50,7 +50,7 @@
 
 [[projects]]
   name = "github.com/go-kit/kit"
-  packages = ["log"]
+  packages = ["log","log/level"]
   revision = "fadad6fffe0466b19df9efd9acde5c9a52df5fa4"
   version = "v0.4.0"
 
@@ -93,6 +93,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c340da0869c5cd3793d5898c5d47dd8639e28f7e8678ebc0a26ec82edb6c8d81"
+  inputs-digest = "a5f968f48a6f1713d743d7a54667fbb5aeb7f30d6c2266236bfec78ff3549bb1"
   solver-name = "gps-cdcl"
   solver-version = 1
