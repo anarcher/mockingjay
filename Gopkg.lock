@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/asdine/storm"
+  packages = [".","codec","codec/json","index","internal","q"]
+  revision = "2da548c16156b3197728372bff5614033084aff5"
+  version = "v0.8.1"
+
+[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/autoscaling","service/cloudwatch","service/cloudwatch/cloudwatchiface","service/sts"]
   revision = "e0cdae7a65ba3a5e66a0af747a7b3967ddac099c"
@@ -12,6 +18,12 @@
   packages = ["."]
   revision = "abae5fc32af8862e420d52e686a7e6ec14111685"
   version = "v0"
+
+[[projects]]
+  name = "github.com/boltdb/bolt"
+  packages = ["."]
+  revision = "dfb21201d9270c1082d5fb0f07f500311ff72f18"
+  version = "v1.2.1"
 
 [[projects]]
   name = "github.com/elazarl/goproxy"
@@ -49,12 +61,6 @@
   version = "v1.5.3"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/jcelliott/lumber"
-  packages = ["."]
-  revision = "dd349441af25132d146d7095c6693a15431fc9b1"
-
-[[projects]]
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
   revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
@@ -68,9 +74,9 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/nanobox-io/golang-scribble"
-  packages = ["."]
-  revision = "da3a159a462297745592fd615d4bcebec94b54c6"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  revision = "abf9c25f54453410d0c6668e519582a9e1115027"
 
 [[projects]]
   branch = "v2"
@@ -81,6 +87,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "67572aa9070655000538bc9d70afe170f41ee40ef478e0ec5885856340c34d20"
+  inputs-digest = "61616f4400b4a7b86bee40aa9c3934da90c6c1236f7e0b84864552b8bede9e1c"
   solver-name = "gps-cdcl"
   solver-version = 1

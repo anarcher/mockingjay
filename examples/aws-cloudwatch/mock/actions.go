@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/anarcher/mockingjay/pkg/xml"
+	"github.com/asdine/storm"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
@@ -42,11 +43,12 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request, lo
 	}
 
 	id := getID(namespace, metricName, asgName)
-	var metric *Metric
-	if err := h.db.Read("metric", id, &metric); err != nil {
-		level.Error(logger).Log("err", err)
-		http.Error(w, err.Error(), 500)
-
+	var metric Metric
+	if err := h.db.One("ID", id, &metric); err != nil {
+		if err != storm.ErrNotFound {
+			level.Error(logger).Log("err", err)
+			http.Error(w, err.Error(), 500)
+		}
 	}
 
 	var datapoints []*cloudwatch.Datapoint
@@ -67,6 +69,7 @@ func (h *Handler) GetMetricStatistics(w http.ResponseWriter, r *http.Request, lo
 		return
 	}
 
+	level.Info(logger).Log("id", id, "datapoint", datapoint.Minimum)
 	fmt.Fprintf(w, xmlRes)
 }
 
@@ -85,7 +88,7 @@ func (h *Handler) SetDesiredCapacity(w http.ResponseWriter, r *http.Request, log
 		return
 	}
 
-	if err := h.db.Write("metric", metric.ID(), metric); err != nil {
+	if err := h.db.Save(metric); err != nil {
 		level.Error(logger).Log("err", err)
 		http.Error(w, "db error:", 500)
 		return
