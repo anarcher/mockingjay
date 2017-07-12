@@ -7,6 +7,7 @@ import (
 )
 
 type Metric struct {
+	ID        string `storm:"id"`
 	Namespace string
 	Name      string
 	Value     float64
@@ -22,6 +23,7 @@ func NewMetric(ns string, name string, value float64) *Metric {
 		Value:     value,
 		CreatedAt: time.Now().UTC(),
 	}
+	m.ID = m.getID()
 	return m
 }
 
@@ -43,12 +45,13 @@ func NewASGInServiceInstancesMetric(ns, asgname, value string) (*Metric, error) 
 		return m, err
 	}
 	m.AutoScalingGroupName = asgname
+	m.ID = m.getID()
 
 	return m, nil
 
 }
 
-func (m *Metric) ID() string {
+func (m *Metric) getID() string {
 	return getID(m.Namespace, m.Name, m.AutoScalingGroupName)
 }
 

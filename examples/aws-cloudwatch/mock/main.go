@@ -3,12 +3,12 @@ package main
 import (
 	"github.com/anarcher/mockingjay/pkg/log"
 
+	"github.com/asdine/storm"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatch"
 	kitlog "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/nanobox-io/golang-scribble"
 
 	"net/http"
 	"os"
@@ -16,14 +16,16 @@ import (
 
 type Handler struct {
 	mux        map[string]func(http.ResponseWriter, *http.Request, kitlog.Logger)
-	db         *scribble.Driver
+	db         *storm.DB
 	cloudwatch *cloudwatch.CloudWatch
 }
 
 func main() {
 	logger := log.Logger
 
-	db, err := scribble.New("./", nil)
+	db, err := storm.Open("./metrics.db")
+	defer db.Close()
+
 	if err != nil {
 		level.Error(logger).Log("err", err)
 		os.Exit(1)
