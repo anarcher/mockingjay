@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/asdine/storm"
-  packages = [".","codec","codec/json","index","internal","q"]
-  revision = "e8518cc1200f320e508639491f9390b9c7c37970"
-  version = "v0.8.0"
-
-[[projects]]
   name = "github.com/aws/aws-sdk-go"
   packages = ["aws","aws/awserr","aws/awsutil","aws/client","aws/client/metadata","aws/corehandlers","aws/credentials","aws/credentials/ec2rolecreds","aws/credentials/endpointcreds","aws/credentials/stscreds","aws/defaults","aws/ec2metadata","aws/endpoints","aws/request","aws/session","aws/signer/v4","private/protocol","private/protocol/query","private/protocol/query/queryutil","private/protocol/rest","private/protocol/xml/xmlutil","service/autoscaling","service/cloudwatch","service/cloudwatch/cloudwatchiface","service/sts"]
   revision = "e0cdae7a65ba3a5e66a0af747a7b3967ddac099c"
@@ -20,21 +14,9 @@
   version = "v0"
 
 [[projects]]
-  name = "github.com/boltdb/bolt"
-  packages = ["."]
-  revision = "583e8937c61f1af6513608ccc75c97b6abdf4ff9"
-  version = "v1.3.0"
-
-[[projects]]
   name = "github.com/elazarl/goproxy"
   packages = ["."]
   revision = "aacba83f36a55ac31cbb71c06547a328c0cd1604"
-
-[[projects]]
-  name = "github.com/emirpasic/gods"
-  packages = ["containers","trees","trees/redblacktree","utils"]
-  revision = "f6c17b524822278a87e3b3bd809fec33b51f5b46"
-  version = "v1.9.0"
 
 [[projects]]
   name = "github.com/fatih/structs"
@@ -67,6 +49,12 @@
   version = "v1.5.3"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/jcelliott/lumber"
+  packages = ["."]
+  revision = "dd349441af25132d146d7095c6693a15431fc9b1"
+
+[[projects]]
   name = "github.com/jmespath/go-jmespath"
   packages = ["."]
   revision = "3433f3ea46d9f8019119e7dd41274e112a2359a9"
@@ -80,9 +68,9 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "b90f89a1e7a9c1f6b918820b3daa7f08488c8594"
+  name = "github.com/nanobox-io/golang-scribble"
+  packages = ["."]
+  revision = "da3a159a462297745592fd615d4bcebec94b54c6"
 
 [[projects]]
   branch = "v2"
@@ -93,6 +81,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a5f968f48a6f1713d743d7a54667fbb5aeb7f30d6c2266236bfec78ff3549bb1"
+  inputs-digest = "67572aa9070655000538bc9d70afe170f41ee40ef478e0ec5885856340c34d20"
   solver-name = "gps-cdcl"
   solver-version = 1
